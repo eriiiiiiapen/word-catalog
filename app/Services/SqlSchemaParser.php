@@ -17,12 +17,14 @@ class SqlSchemaParser
                 $tableName = $statement->name->table;
                 
                 foreach ($statement->fields as $field) {
-                    if ($field->name) {
+                    if ($field->name && !$field->isConstraint) {
+                        $physicalName = (string) $field->name;
+
                         $results[] = [
-                            'table_name'  => $tableName,
-                            'physical_name' => $field->name->column,
+                            'table_name'    => $tableName,
+                            'physical_name' => trim($physicalName, '`'),
                             'logical_name'  => $field->options?->has('COMMENT') 
-                                                ? trim($field->options->get('COMMENT'), "'")
+                                                ? trim($field->options->get('COMMENT', ''), "'")
                                                 : '',
                         ];
                     }

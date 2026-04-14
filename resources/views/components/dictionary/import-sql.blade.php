@@ -30,11 +30,12 @@ new class extends Component {
 
 <div>
     <div class="p-6">
-        <h1 class="text-2xl font-bold mb-4">DDLインポート (Volt版)</h1>
+        <h1 class="text-2xl font-bold mb-4">DDLインポート</h1>
 
         <div class="mb-8 p-4 border-2 border-dashed rounded-lg">
-            <input type="file" wire:model="sqlFile">
-            <button wire:click="process" class="bg-blue-600 text-white px-4 py-2 rounded ml-2">
+            <input type="file" wire:model="sqlFile" class="border p-4">
+            <button wire:click="process" class="text-white px-4 py-2 rounded ml-2 @if(!$sqlFile) bg-gray-300 @else bg-blue-600 hover:bg-blue-700 cursor-pointer @endif"
+            >
                 解析開始
             </button>
         </div>
@@ -43,7 +44,7 @@ new class extends Component {
             <table class="min-w-full bg-white border">
                 <thead>
                     <tr class="bg-slate-100">
-                        <th class="border px-4 py-2">テーブル</th>
+                        <th class="border px-4 py-2">テーブル名</th>
                         <th class="border px-4 py-2">物理名</th>
                         <th class="border px-4 py-2">論理名</th>
                     </tr>

@@ -39,8 +39,6 @@ new class extends Component {
             ]);
         }
 
-        \Log::info(1);
-
         $this->suggestions = [];
         session()->flash('message', '正常にインポートされました。');
     }

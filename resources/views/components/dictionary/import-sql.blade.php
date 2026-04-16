@@ -3,6 +3,8 @@
 use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use App\Services\SqlSchemaParser;
+use App\Models\DictionaryEntry;
+use Illuminate\Support\Str;
 
 new class extends Component {
     use WithFileUploads;
@@ -24,7 +26,23 @@ new class extends Component {
 
     public function save()
     {
-        // 
+        $this->validate([
+            'suggestions.*.logical_name' => 'required|string|max:255',
+        ]);
+
+        foreach ($this->suggestions as $entry) {
+            DictionaryEntry::create([
+                'table_name'    => $entry['table_name'],
+                'physical_name' => $entry['physical_name'],
+                'logical_name'  => $entry['logical_name'],
+                'public_token' => (string) Str::uuid(),
+            ]);
+        }
+
+        \Log::info(1);
+
+        $this->suggestions = [];
+        session()->flash('message', '正常にインポートされました。');
     }
 }; ?>
 
@@ -62,6 +80,21 @@ new class extends Component {
                     @endforeach
                 </tbody>
             </table>
+            <div class="mt-6 flex justify-end">
+                <button 
+                    type="button" 
+                    wire:click="save" 
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition"
+                >
+                    この内容で辞書に登録する
+                </button>
+            </div>
         @endif
     </div>
+
+    @if (session()->has('message'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {{ session('message') }}
+        </div>
+    @endif
 </div>

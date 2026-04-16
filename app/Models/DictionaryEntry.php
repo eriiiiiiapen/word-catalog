@@ -13,5 +13,5 @@ class DictionaryEntry extends Model
         'description',
         'public_token',
         'is_published',
-    ]
+    ];
 }

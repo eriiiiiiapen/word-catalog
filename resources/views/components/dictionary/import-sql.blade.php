@@ -82,17 +82,16 @@ new class extends Component {
                 <button 
                     type="button" 
                     wire:click="save" 
-                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition"
+                    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition cursor-pointer"
                 >
                     この内容で辞書に登録する
                 </button>
             </div>
         @endif
+        @if (session()->has('message'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                {{ session('message') }}
+            </div>
+        @endif
     </div>
-
-    @if (session()->has('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('message') }}
-        </div>
-    @endif
 </div>

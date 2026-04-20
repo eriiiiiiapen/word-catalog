@@ -31,8 +31,11 @@ new class extends Component {
     #[Computed]
     public function dictionaryEntry()
     {
-        return DictionaryEntry::where('logical_name', 'LIKE', '%'.$this->search.'%')
-            ->get();
+        return DictionaryEntry::where(function ($query) {
+            $query->where('table_name', 'LIKE', '%'.$this->search.'%')
+                ->orWhere('logical_name', 'LIKE', '%'.$this->search.'%')
+                ->orWhere('physical_name', 'LIKE', '%'.$this->search.'%');
+        })->get();
     }
 }; 
 

@@ -4,6 +4,7 @@ use Livewire\Volt\Component;
 use Livewire\WithFileUploads;
 use App\Services\SqlSchemaParser;
 use App\Models\DictionaryEntry;
+use App\Models\Project;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 
@@ -27,6 +28,35 @@ new class extends Component {
     //         ->where('logical_name', 'LIKE', '%'.$this->search.'%')
     //         ->get();
     // }
+    public $newTableName;
+    public $newPhysicalName;
+    public $newLogicalName;
+    public $projectId;
+
+    public function quickSave()
+    {
+        $this->validate([
+            'projectId' => 'required',
+            'newPhysicalName' => 'required|string',
+            'newLogicalName' => 'required|string',
+        ]);
+
+        DictionaryEntry::create([
+            'project_id'    => $this->projectId,
+            'table_name'    => $this->newTableName ?? '共通・その他',
+            'physical_name' => $this->newPhysicalName,
+            'logical_name'  => $this->newLogicalName,
+            'public_token'  => (string) Str::uuid(),
+        ]);
+
+        $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId']);
+    }
+
+    #[Computed]
+    public function projects()
+    {
+        return Project::get();
+    }
 
     #[Computed]
     public function dictionaryEntry()
@@ -47,6 +77,34 @@ new class extends Component {
             <h1 class="text-2xl font-bold mb-4">一覧</h1>
             <div class="flex justify-end">
                 検索：<input type="text" class="border rounded px-1" wire:model.live="search">
+            </div>
+        </div>
+        <div class="px-8 mb-6">
+            <div class="bg-blue-50 p-4 rounded-lg flex gap-2 items-end border border-blue-100">
+                <div class="flex-1">
+                    <label class="block text-xs text-blue-600 font-bold mb-1">プロジェクト</label>
+                    <select wire:model="projectId" class="w-full border rounded px-2 py-1 bg-white">
+                        <option value="">選択してください</option>
+                        @foreach($this->projects as $project)
+                            <option value="{{ $project->id }}">{{ $project->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs text-blue-600 font-bold mb-1">テーブル/カテゴリ</label>
+                    <input type="text" wire:model="newTableName" placeholder="users / 業務用語" class="w-full border rounded px-2 py-1 bg-white">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs text-blue-600 font-bold mb-1">物理名 (英字)</label>
+                    <input type="text" wire:model="newPhysicalName" placeholder="status_id" class="w-full border rounded px-2 py-1 bg-white">
+                </div>
+                <div class="flex-1">
+                    <label class="block text-xs text-blue-600 font-bold mb-1">論理名 (日本語)</label>
+                    <input type="text" wire:model="newLogicalName" placeholder="公開ステータス" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
+                </div>
+                <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 font-bold shadow-sm">
+                    追加
+                </button>
             </div>
         </div>
         @if(count($this->dictionaryEntry) > 0)

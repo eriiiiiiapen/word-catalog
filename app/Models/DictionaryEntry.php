@@ -14,4 +14,9 @@ class DictionaryEntry extends Model
         'public_token',
         'is_published',
     ];
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
+    }
 }

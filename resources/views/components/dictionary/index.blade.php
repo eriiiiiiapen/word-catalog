@@ -5,6 +5,7 @@ use Livewire\WithFileUploads;
 use App\Services\SqlSchemaParser;
 use App\Models\DictionaryEntry;
 use App\Models\Project;
+use App\Models\Tag;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 
@@ -32,6 +33,7 @@ new class extends Component {
     public $newPhysicalName;
     public $newLogicalName;
     public $projectId;
+    public $newTags;
 
     public function quickSave()
     {
@@ -41,7 +43,7 @@ new class extends Component {
             'newLogicalName' => 'required|string',
         ]);
 
-        DictionaryEntry::create([
+        $entry = DictionaryEntry::create([
             'project_id'    => $this->projectId,
             'table_name'    => $this->newTableName ?? '共通・その他',
             'physical_name' => $this->newPhysicalName,
@@ -49,7 +51,21 @@ new class extends Component {
             'public_token'  => (string) Str::uuid(),
         ]);
 
-        $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId']);
+        if ($this->newTags) {
+            $tagNames = collect(explode(',', $this->newTags))
+                ->map(fn($t) => trim($t))
+                ->filter();
+
+            $tagIds = [];
+            foreach ($tagNames as $name) {
+                $tag = Tag::firstOrCreate(['name' => $name]);
+                $tagIds[] = $tag->id;
+            }
+
+            $entry->tags()->sync($tagIds);
+        }
+
+        $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId', 'newTags']);
     }
 
     #[Computed]
@@ -102,6 +118,10 @@ new class extends Component {
                     <label class="block text-xs text-blue-600 font-bold mb-1">論理名 (日本語)</label>
                     <input type="text" wire:model="newLogicalName" placeholder="公開ステータス" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
                 </div>
+                <div>
+                    <label class="block text-xs text-blue-600 font-bold mb-1">タグ (カンマ区切り)</label>
+                    <input type="text" wire:model="newTags" placeholder="決済, 重要, 未定" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
+                </div>
                 <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 font-bold shadow-sm">
                     追加
                 </button>
@@ -121,7 +141,16 @@ new class extends Component {
                     @foreach($this->dictionaryEntry as $index => $item)
                         <tr>
                             <td class="border px-4 py-2">{{ $item->table_name }}</td>
-                            <td class="border px-4 py-2"><code>{{ $item->physical_name }}</code></td>
+                            <td class="border px-4 py-2">
+                                <code>{{ $item->physical_name }}</code>
+                                <div class="mt-1 flex flex-wrap gap-1">
+                                    @foreach($item->tags as $tag)
+                                        <span class="text-[10px] px-1.5 py-0.5 rounded-full text-white bg-blue-500">
+                                            {{ $tag->name }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            </td>
                             <td class="border px-4 py-2">
                                 {{ $item->logical_name }}
                             </td>

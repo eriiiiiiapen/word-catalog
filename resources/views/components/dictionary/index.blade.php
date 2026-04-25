@@ -34,6 +34,7 @@ new class extends Component {
     public $newLogicalName;
     public $projectId;
     public $newTags;
+    public ?int $selectedTagId = null;
 
     public function quickSave()
     {
@@ -68,6 +69,11 @@ new class extends Component {
         $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId', 'newTags']);
     }
 
+    public function selectTag($tagId)
+    {
+        $this->selectedTagId = ($this->selectedTagId === $tagId) ? null : $tagId;
+    }
+
     #[Computed]
     public function projects()
     {
@@ -77,11 +83,23 @@ new class extends Component {
     #[Computed]
     public function dictionaryEntry()
     {
-        return DictionaryEntry::where(function ($query) {
+        return DictionaryEntry::query()
+        ->with(['project', 'tags'])
+        ->when($this->projectId, fn($q) => $q->where('project_id', $this->projectId))
+        ->when($this->selectedTagId, function($q) {
+            $q->whereHas('tags', fn($inner) => $inner->where('tags.id', $this->selectedTagId));
+        })
+        ->where(function ($query) {
             $query->where('table_name', 'LIKE', '%'.$this->search.'%')
                 ->orWhere('logical_name', 'LIKE', '%'.$this->search.'%')
                 ->orWhere('physical_name', 'LIKE', '%'.$this->search.'%');
         })->get();
+    }
+
+    #[Computed]
+    public function activeTagName()
+    {
+        return $this->selectedTagId ? Tag::find($this->selectedTagId)?->name : null;
     }
 }; 
 
@@ -91,6 +109,12 @@ new class extends Component {
     <div class="p-6">
         <div class="w-full flex flex-row justify-between items-center px-8 py-2">
             <h1 class="text-2xl font-bold mb-4">一覧</h1>
+            @if($this->activeTagName)
+                <div class="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold animate-pulse">
+                    タグ: {{ $this->activeTagName }}
+                    <button wire:click="selectTag({{ $selectedTagId }})" class="ml-2 hover:text-red-500">×</button>
+                </div>
+            @endif
             <div class="flex justify-end">
                 検索：<input type="text" class="border rounded px-1" wire:model.live="search">
             </div>
@@ -145,9 +169,13 @@ new class extends Component {
                                 <code>{{ $item->physical_name }}</code>
                                 <div class="mt-1 flex flex-wrap gap-1">
                                     @foreach($item->tags as $tag)
-                                        <span class="text-[10px] px-1.5 py-0.5 rounded-full text-white bg-blue-500">
-                                            {{ $tag->name }}
-                                        </span>
+                                        <button 
+                                            type="button"
+                                            wire:click="selectTag({{ $tag->id }})"
+                                            class="text-[10px] px-2 py-0.5 rounded-full text-white transition-all {{ $selectedTagId === $tag->id ? 'ring-2 ring-offset-1 ring-blue-600 bg-blue-700' : 'bg-blue-500 hover:bg-blue-600' }}"
+                                        >
+                                            #{{ $tag->name }}
+                                        </button>
                                     @endforeach
                                 </div>
                             </td>

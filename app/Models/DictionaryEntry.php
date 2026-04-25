@@ -13,10 +13,16 @@ class DictionaryEntry extends Model
         'description',
         'public_token',
         'is_published',
+        'project_id',
     ];
 
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
     }
 }

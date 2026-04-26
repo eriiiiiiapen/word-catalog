@@ -156,6 +156,7 @@ new class extends Component {
             <table class="w-full bg-white border">
                 <thead>
                     <tr class="bg-slate-100">
+                        <th class="border px-4 py-2">プロジェクト</th>
                         <th class="border px-4 py-2">テーブル名</th>
                         <th class="border px-4 py-2">物理名</th>
                         <th class="border px-4 py-2">論理名</th>
@@ -164,6 +165,7 @@ new class extends Component {
                 <tbody>
                     @foreach($this->dictionaryEntry as $index => $item)
                         <tr>
+                            <td class="border px-4 py-2">{{ $item->project ? $item->project->name : '' }}</td>
                             <td class="border px-4 py-2">{{ $item->table_name }}</td>
                             <td class="border px-4 py-2">
                                 <code>{{ $item->physical_name }}</code>

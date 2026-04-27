@@ -101,6 +101,15 @@ new class extends Component {
     {
         return $this->selectedTagId ? Tag::find($this->selectedTagId)?->name : null;
     }
+
+    #[Computed]
+    public function popularTags()
+    {
+        return Tag::withCount('dictionaryEntries')
+            ->orderBy('dictionary_entries_count', 'desc')
+            ->take(10)
+            ->get();
+    }
 }; 
 
 ?>
@@ -118,6 +127,21 @@ new class extends Component {
             <div class="flex justify-end">
                 検索：<input type="text" class="border rounded px-1" wire:model.live="search">
             </div>
+        </div>
+        <div class="px-8 mb-4 flex flex-wrap gap-2 items-center">
+            <span class="text-xs font-bold text-gray-500 uppercase">クイックタグ:</span>
+            @foreach($this->popularTags as $tag)
+                <button 
+                    wire:click="selectTag({{ $tag->id }})"
+                    class="px-2 py-1 text-xs rounded border transition-all 
+                    {{ $selectedTagId === $tag->id 
+                        ? 'bg-blue-600 text-white border-blue-600' 
+                        : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400' }}"
+                >
+                    {{ $tag->name }} 
+                    <span class="ml-1 text-[10px] opacity-70">({{ $tag->dictionary_entries_count }})</span>
+                </button>
+            @endforeach
         </div>
         <div class="px-8 mb-6">
             <div class="bg-blue-50 p-4 rounded-lg flex gap-2 items-end border border-blue-100">

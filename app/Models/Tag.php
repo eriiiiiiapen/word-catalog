@@ -10,4 +10,9 @@ class Tag extends Model
         'name',
         'color',
     ];
+    
+    public function dictionaryEntries()
+    {
+        return $this->belongsToMany(DictionaryEntry::class);
+    }
 }

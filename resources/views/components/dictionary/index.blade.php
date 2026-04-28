@@ -133,7 +133,7 @@ new class extends Component {
             @foreach($this->popularTags as $tag)
                 <button 
                     wire:click="selectTag({{ $tag->id }})"
-                    class="px-2 py-1 text-xs rounded border transition-all 
+                    class="px-2 py-1 text-xs rounded border transition-all cursor-pointer
                     {{ $selectedTagId === $tag->id 
                         ? 'bg-blue-600 text-white border-blue-600' 
                         : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400' }}"
@@ -174,6 +174,7 @@ new class extends Component {
                     追加
                 </button>
             </div>
+            @if($errors->any()) @foreach($errors->all() as $error) <div>{{ $error }}</div> @endforeach  @endif
         </div>
         @if(count($this->dictionaryEntry) > 0)
         <div class="px-8">

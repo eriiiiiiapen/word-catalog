@@ -189,7 +189,7 @@ new class extends Component {
                 </thead>
                 <tbody>
                     @foreach($this->dictionaryEntry as $index => $item)
-                        <tr>
+                        <tr class="hover:bg-gray-200">
                             <td class="border px-4 py-2">{{ $item->project ? $item->project->name : '' }}</td>
                             <td class="border px-4 py-2">{{ $item->table_name }}</td>
                             <td class="border px-4 py-2">

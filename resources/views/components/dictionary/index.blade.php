@@ -59,7 +59,14 @@ new class extends Component {
 
             $tagIds = [];
             foreach ($tagNames as $name) {
-                $tag = Tag::firstOrCreate(['name' => $name]);
+                $tag = Tag::firstOrCreate(
+                    [
+                        'name' => $name
+                    ],
+                    [
+                        'color' => $this->getRandomColor()
+                    ]
+                );
                 $tagIds[] = $tag->id;
             }
 
@@ -67,6 +74,12 @@ new class extends Component {
         }
 
         $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId', 'newTags']);
+    }
+
+    private function getRandomColor()
+    {
+        $colors = ['#ef4444', '#f59e0b', '#10b981', '#3b82f6', '#8b5cf6', '#ec4899'];
+        return $colors[array_rand($colors)];
     }
 
     public function selectTag($tagId)
@@ -199,6 +212,7 @@ new class extends Component {
                                         <button 
                                             type="button"
                                             wire:click="selectTag({{ $tag->id }})"
+                                            style="background-color: {{ $tag->color }};"
                                             class="text-[10px] px-2 py-0.5 rounded-full text-white transition-all {{ $selectedTagId === $tag->id ? 'ring-2 ring-offset-1 ring-blue-600 bg-blue-700' : 'bg-blue-500 hover:bg-blue-600' }}"
                                         >
                                             #{{ $tag->name }}

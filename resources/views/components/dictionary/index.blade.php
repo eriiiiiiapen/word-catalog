@@ -138,6 +138,13 @@ new class extends Component {
                 </div>
             @endif
             <div class="flex justify-end">
+                <div>
+                    <a href="{{ route('dictionary.import-sql-with-project') }}" 
+                        class="bg-blue-50 border-blue-300 p-2 mr-2 rounded hover:bg-blue-100"
+                    >
+                        インポート画面へ
+                    </a>
+                </div>
                 検索：<input type="text" class="border rounded px-1" wire:model.live="search">
             </div>
         </div>
@@ -183,7 +190,7 @@ new class extends Component {
                     <label class="block text-xs text-blue-600 font-bold mb-1">タグ (カンマ区切り)</label>
                     <input type="text" wire:model="newTags" placeholder="決済, 重要, 未定" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
                 </div>
-                <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 font-bold shadow-sm">
+                <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer font-bold shadow-sm">
                     追加
                 </button>
             </div>

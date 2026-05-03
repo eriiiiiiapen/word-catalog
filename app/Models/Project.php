@@ -9,4 +9,9 @@ class Project extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function dictionaryEntries()
+    {
+        return $this->hasMany(DictionaryEntry::class);
+    }
 }

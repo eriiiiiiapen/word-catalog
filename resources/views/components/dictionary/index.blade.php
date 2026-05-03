@@ -90,7 +90,9 @@ new class extends Component {
     #[Computed]
     public function projects()
     {
-        return Project::get();
+        return Project::withCount('dictionaryEntries')
+            ->orderBy('name', 'asc')
+            ->get();
     }
 
     #[Computed]
@@ -127,118 +129,81 @@ new class extends Component {
 
 ?>
 
-<div>
-    <div class="p-6">
-        <div class="w-full flex flex-row justify-between items-center px-8 py-2">
-            <h1 class="text-2xl font-bold mb-4">一覧</h1>
-            @if($this->activeTagName)
-                <div class="flex items-center bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold animate-pulse">
-                    タグ: {{ $this->activeTagName }}
-                    <button wire:click="selectTag({{ $selectedTagId }})" class="ml-2 hover:text-red-500">×</button>
-                </div>
-            @endif
-            <div class="flex justify-end">
-                <div>
-                    <a href="{{ route('dictionary.import-sql-with-project') }}" 
-                        class="bg-blue-50 border-blue-300 p-2 mr-2 rounded hover:bg-blue-100"
-                    >
-                        インポート画面へ
-                    </a>
-                </div>
-                検索：<input type="text" class="border rounded px-1" wire:model.live="search">
-            </div>
+<div class="flex h-screen bg-gray-100">
+    <!-- サイドバー -->
+    <div class="w-64 bg-slate-800 text-white flex flex-col shadow-xl">
+        <div class="p-6">
+            <h2 class="text-xl font-bold tracking-widest text-blue-400">DEV_DICT</h2>
+            <p class="text-xs text-slate-400 mt-1">案件別用語辞典</p>
         </div>
-        <div class="px-8 mb-4 flex flex-wrap gap-2 items-center">
-            <span class="text-xs font-bold text-gray-500 uppercase">クイックタグ:</span>
-            @foreach($this->popularTags as $tag)
+
+        <nav class="flex-1 overflow-y-auto px-4 space-y-2">
+            <button 
+                wire:click="$set('projectId', null)"
+                class="w-full text-left px-4 py-2 rounded transition {{ is_null($projectId) ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700' }}"
+            >
+                📁 すべての案件
+            </button>
+
+            <div class="pt-4 pb-2 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                プロジェクト一覧
+            </div>
+
+            @foreach($this->projects as $project)
                 <button 
-                    wire:click="selectTag({{ $tag->id }})"
-                    class="px-2 py-1 text-xs rounded border transition-all cursor-pointer
-                    {{ $selectedTagId === $tag->id 
-                        ? 'bg-blue-600 text-white border-blue-600' 
-                        : 'bg-white text-gray-600 border-gray-300 hover:border-blue-400' }}"
+                    wire:click="$set('projectId', {{ $project->id }})"
+                    class="w-full text-left px-4 py-2 rounded text-sm transition flex justify-between items-center {{ $projectId === $project->id ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700' }}"
                 >
-                    {{ $tag->name }} 
-                    <span class="ml-1 text-[10px] opacity-70">({{ $tag->dictionary_entries_count }})</span>
+                    <span class="truncate">{{ $project->name }}</span>
+                    <span class="text-[10px] bg-slate-900 px-1.5 py-0.5 rounded text-slate-400">
+                        {{ $project->dictionary_entries_count }}
+                    </span>
                 </button>
             @endforeach
+        </nav>
+
+        <div class="p-4 border-t border-slate-700 text-xs text-slate-500">
+            Total: {{ \App\Models\DictionaryEntry::count() }} entries
         </div>
-        <div class="px-8 mb-6">
-            <div class="bg-blue-50 p-4 rounded-lg flex gap-2 items-end border border-blue-100">
-                <div class="flex-1">
-                    <label class="block text-xs text-blue-600 font-bold mb-1">プロジェクト</label>
-                    <select wire:model="projectId" class="w-full border rounded px-2 py-1 bg-white">
-                        <option value="">選択してください</option>
-                        @foreach($this->projects as $project)
-                            <option value="{{ $project->id }}">{{ $project->name }}</option>
-                        @endforeach
-                    </select>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+        <!-- 上部ヘッダー（検索やタグなど） -->
+        <header class="bg-white border-b p-4 shadow-sm z-10">
+            <div class="flex justify-between items-center mb-4">
+                <h1 class="text-2xl font-bold text-gray-800">
+                    {{ $projectId ? \App\Models\Project::find($projectId)->name : 'すべての案件' }}
+                </h1>
+                
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                            🔍
+                        </span>
+                        <input type="text" 
+                               wire:model.live="search" 
+                               placeholder="物理名・論理名で検索..."
+                               class="pl-10 pr-4 py-2 border rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none">
+                    </div>
                 </div>
-                <div class="flex-1">
-                    <label class="block text-xs text-blue-600 font-bold mb-1">テーブル/カテゴリ</label>
-                    <input type="text" wire:model="newTableName" placeholder="users / 業務用語" class="w-full border rounded px-2 py-1 bg-white">
-                </div>
-                <div class="flex-1">
-                    <label class="block text-xs text-blue-600 font-bold mb-1">物理名 (英字)</label>
-                    <input type="text" wire:model="newPhysicalName" placeholder="status_id" class="w-full border rounded px-2 py-1 bg-white">
-                </div>
-                <div class="flex-1">
-                    <label class="block text-xs text-blue-600 font-bold mb-1">論理名 (日本語)</label>
-                    <input type="text" wire:model="newLogicalName" placeholder="公開ステータス" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
-                </div>
-                <div>
-                    <label class="block text-xs text-blue-600 font-bold mb-1">タグ (カンマ区切り)</label>
-                    <input type="text" wire:model="newTags" placeholder="決済, 重要, 未定" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
-                </div>
-                <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer font-bold shadow-sm">
-                    追加
-                </button>
             </div>
-            @if($errors->any()) @foreach($errors->all() as $error) <div>{{ $error }}</div> @endforeach  @endif
-        </div>
-        @if(count($this->dictionaryEntry) > 0)
-        <div class="px-8">
-            <table class="w-full bg-white border">
-                <thead>
-                    <tr class="bg-slate-100">
-                        <th class="border px-4 py-2">プロジェクト</th>
-                        <th class="border px-4 py-2">テーブル名</th>
-                        <th class="border px-4 py-2">物理名</th>
-                        <th class="border px-4 py-2">論理名</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($this->dictionaryEntry as $index => $item)
-                        <tr class="hover:bg-gray-200">
-                            <td class="border px-4 py-2">{{ $item->project ? $item->project->name : '' }}</td>
-                            <td class="border px-4 py-2">{{ $item->table_name }}</td>
-                            <td class="border px-4 py-2">
-                                <code>{{ $item->physical_name }}</code>
-                                <div class="mt-1 flex flex-wrap gap-1">
-                                    @foreach($item->tags as $tag)
-                                        <button 
-                                            type="button"
-                                            wire:click="selectTag({{ $tag->id }})"
-                                            style="background-color: {{ $tag->color }};"
-                                            class="text-[10px] px-2 py-0.5 rounded-full text-white transition-all {{ $selectedTagId === $tag->id ? 'ring-2 ring-offset-1 ring-blue-600 bg-blue-700' : 'bg-blue-500 hover:bg-blue-600' }}"
-                                        >
-                                            #{{ $tag->name }}
-                                        </button>
-                                    @endforeach
-                                </div>
-                            </td>
-                            <td class="border px-4 py-2">
-                                {{ $item->logical_name }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        @else
-            <div class="mt-6 flex justify-start">
-                登録されているものはありません。
+
+            <div class="flex flex-wrap gap-2 items-center">
+                <span class="text-[10px] font-bold text-gray-400 uppercase">Popular Tags:</span>
+                @foreach($this->popularTags as $tag)
+                    <button wire:click="selectTag({{ $tag->id }})" 
+                            class="px-2 py-0.5 text-[11px] rounded border {{ $selectedTagId === $tag->id ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-500 border-gray-200' }}">
+                        #{{ $tag->name }}
+                    </button>
+                @endforeach
             </div>
-        @endif
+        </header>
+
+        <!-- テーブルエリア -->
+        <main class="flex-1 overflow-auto p-8">
+            @include('livewire.dictionary.partials.quick-form')
+            @include('livewire.dictionary.partials.table')
+        </main>
     </div>
 </div>

@@ -99,16 +99,20 @@ new class extends Component {
     public function dictionaryEntry()
     {
         return DictionaryEntry::query()
-        ->with(['project', 'tags'])
-        ->when($this->projectId, fn($q) => $q->where('project_id', $this->projectId))
-        ->when($this->selectedTagId, function($q) {
-            $q->whereHas('tags', fn($inner) => $inner->where('tags.id', $this->selectedTagId));
-        })
-        ->where(function ($query) {
-            $query->where('table_name', 'LIKE', '%'.$this->search.'%')
-                ->orWhere('logical_name', 'LIKE', '%'.$this->search.'%')
-                ->orWhere('physical_name', 'LIKE', '%'.$this->search.'%');
-        })->get();
+            ->with(['project', 'tags'])
+            ->when($this->projectId, fn($q) => $q->where('project_id', $this->projectId))
+            ->where(function ($query) {
+                $search = $this->search;
+                
+                // 検索ワードを「ひらがな」から「カタカナ」に変換したものも用意
+                $katakanaSearch = mb_convert_kana($search, "KVC"); 
+
+                $query->where('table_name', 'LIKE', "%{$search}%")
+                    ->orWhere('physical_name', 'LIKE', "%{$search}%")
+                    ->orWhere('logical_name', 'LIKE', "%{$search}%")
+                    ->orWhere('logical_name', 'LIKE', "%{$katakanaSearch}%");
+            })
+            ->get();
     }
 
     #[Computed]

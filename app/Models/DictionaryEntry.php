@@ -14,6 +14,7 @@ class DictionaryEntry extends Model
         'public_token',
         'is_published',
         'project_id',
+        'example_data'
     ];
 
     public function tags()

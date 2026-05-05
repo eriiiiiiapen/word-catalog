@@ -11,7 +11,7 @@
         </thead>
         <tbody>
             @foreach($this->dictionaryEntry as $index => $item)
-                <tr class="hover:bg-gray-200">
+                <tr wire:click="openDetails({{ $item->id }})" class="cursor-pointer hover:bg-gray-200 transition">
                     <td class="border px-4 py-2">{{ $item->project ? $item->project->name : '' }}</td>
                     <td class="border px-4 py-2">{{ $item->table_name }}</td>
                     <td class="border px-4 py-2">
@@ -36,6 +36,35 @@
             @endforeach
         </tbody>
     </table>
+
+    <!-- スライドオーバー (選択されている時だけ右から表示) -->
+    @if($this->selectedEntry)
+        <div class="fixed inset-y-0 right-0 w-96 bg-white shadow-2xl z-50 border-l transform transition-transform duration-300">
+            <div class="h-full flex flex-col p-6 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold">用語詳細</h2>
+                    <button wire:click="$set('selectedEntryId', null)" class="text-gray-400 hover:text-gray-600">✕</button>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <label class="text-xs font-bold text-blue-600 uppercase">論理名</label>
+                        <p class="text-lg font-semibold text-gray-800">{{ $this->selectedEntry->logical_name }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-600 uppercase">物理名</label>
+                        <p class="font-mono bg-gray-100 p-2 rounded">{{ $this->selectedEntry->physical_name }}</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-blue-600 uppercase">補足説明</label>
+                        <textarea class="w-full border rounded p-2 text-sm h-32" 
+                                placeholder="この項目の背景や、開発時の注意点などをメモ..."
+                                wire:model.blur="description"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div wire:click="$set('selectedEntryId', null)" class="fixed inset-0 bg-black opacity-20 z-40"></div>
+    @endif
 </div>
 @else
     <div class="mt-6 flex justify-start">

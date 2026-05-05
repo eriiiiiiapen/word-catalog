@@ -35,6 +35,7 @@ new class extends Component {
     public $projectId;
     public $newTags;
     public ?int $selectedTagId = null;
+    public $selectedEntryId = null;
 
     public function quickSave()
     {
@@ -87,6 +88,11 @@ new class extends Component {
         $this->selectedTagId = ($this->selectedTagId === $tagId) ? null : $tagId;
     }
 
+    public function openDetails($id)
+    {
+        $this->selectedEntryId = $id;
+    }
+
     #[Computed]
     public function projects()
     {
@@ -128,6 +134,12 @@ new class extends Component {
             ->orderBy('dictionary_entries_count', 'desc')
             ->take(10)
             ->get();
+    }
+
+    #[Computed]
+    public function selectedEntry()
+    {
+        return $this->selectedEntryId ? DictionaryEntry::with('tags')->find($this->selectedEntryId) : null;
     }
 }; 
 

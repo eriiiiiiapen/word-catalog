@@ -37,6 +37,9 @@ new class extends Component {
     public ?int $selectedTagId = null;
     public $selectedEntryId = null;
 
+    public $newLinkLabel;
+    public $newLinkUrl;
+
     public function quickSave()
     {
         $this->validate([
@@ -75,6 +78,27 @@ new class extends Component {
         }
 
         $this->reset(['newTableName', 'newPhysicalName', 'newLogicalName', 'projectId', 'newTags']);
+    }
+
+    public function addLink()
+    {
+        $this->validate([
+            'newLinkLabel' => 'required|string',
+            'newLinkUrl' => 'required|url',
+        ]);
+
+        $currentLinks = $this->selectedEntry->links ?? [];
+
+        $currentLinks[] = [
+            'label' => $this->newLinkLabel,
+            'url' => $this->newLinkUrl,
+        ];
+
+        $this->selectedEntry->update([
+            'links' => $currentLinks
+        ]);
+
+        $this->reset(['newLinkLabel', 'newLinkUrl']);
     }
 
     private function getRandomColor()
@@ -208,7 +232,7 @@ new class extends Component {
             <div class="flex flex-wrap gap-2 items-center">
                 <span class="text-[10px] font-bold text-gray-400 uppercase">Popular Tags:</span>
                 @foreach($this->popularTags as $tag)
-                    <button wire:click="selectTag({{ $tag->id }})" 
+                    <button wire:click.stop="selectTag({{ $tag->id }})" 
                             class="px-2 py-0.5 text-[11px] rounded border {{ $selectedTagId === $tag->id ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-500 border-gray-200' }}">
                         #{{ $tag->name }}
                     </button>

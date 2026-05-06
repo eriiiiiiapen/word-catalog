@@ -20,7 +20,7 @@
                             @foreach($item->tags as $tag)
                                 <button 
                                     type="button"
-                                    wire:click="selectTag({{ $tag->id }})"
+                                    wire:click.stop="selectTag({{ $tag->id }})"
                                     style="background-color: {{ $tag->color }};"
                                     class="text-[10px] px-2 py-0.5 rounded-full text-white transition-all {{ $selectedTagId === $tag->id ? 'ring-2 ring-offset-1 ring-blue-600 bg-blue-700' : 'bg-blue-500 hover:bg-blue-600' }}"
                                 >
@@ -59,6 +59,23 @@
                         <textarea class="w-full border rounded p-2 text-sm h-32" 
                                 placeholder="この項目の背景や、開発時の注意点などをメモ..."
                                 wire:model.blur="description"></textarea>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <label class="text-xs font-bold text-blue-600 uppercase">関連リンク</label>
+                    <div class="space-y-2 mt-2">
+                        @if($this->selectedEntry->links)
+                            @foreach($this->selectedEntry->links as $link)
+                                <a href="{{ $link['url'] }}" target="_blank" class="block text-sm text-blue-500 hover:underline flex items-center">
+                                    🔗 {{ $link['label'] ?? '外部リンク' }}
+                                </a>
+                            @endforeach
+                        @endif
+                        <div class="flex gap-1 mt-2 border border-gray-300 p-4">
+                            <input type="text" wire:model="newLinkLabel" placeholder="ラベル" class="text-xs border rounded px-1 w-1/3">
+                            <input type="text" wire:model="newLinkUrl" placeholder="URL" class="text-xs border rounded px-1 flex-1">
+                            <button wire:click="addLink" class="bg-blue-400 text-white px-2 rounded text-xs">+</button>
+                        </div>
                     </div>
                 </div>
             </div>

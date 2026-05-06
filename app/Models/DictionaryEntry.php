@@ -14,7 +14,12 @@ class DictionaryEntry extends Model
         'public_token',
         'is_published',
         'project_id',
-        'example_data'
+        'example_data',
+        'links'
+    ];
+
+    protected $casts = [
+        'links' => 'array',
     ];
 
     public function tags()

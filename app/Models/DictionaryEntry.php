@@ -31,4 +31,9 @@ class DictionaryEntry extends Model
     {
         return $this->belongsTo(Project::class);
     }
+
+    public function logs()
+    {
+        return $this->hasMany(DictionaryLog::class);
+    }
 }

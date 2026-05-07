@@ -36,6 +36,7 @@ new class extends Component {
     public $newTags;
     public ?int $selectedTagId = null;
     public $selectedEntryId = null;
+    public $description;
 
     public $newLinkLabel;
     public $newLinkUrl;
@@ -98,6 +99,11 @@ new class extends Component {
             'links' => $currentLinks
         ]);
 
+        $this->selectedEntry->logs()->create([
+            'action' => 'link_added',
+            'changes' => ['label' => $this->newLinkLabel]
+        ]);
+
         $this->reset(['newLinkLabel', 'newLinkUrl']);
     }
 
@@ -115,6 +121,21 @@ new class extends Component {
     public function openDetails($id)
     {
         $this->selectedEntryId = $id;
+        $this->description = $this->selectedEntry->description;
+    }
+
+    public function changeDesctiption()
+    {
+        if (!$this->selectedEntry) return;
+
+        $this->selectedEntry->update([
+            'description' => $this->description
+        ]);
+
+        $this->selectedEntry->logs()->create([
+            'action' => 'updated',
+            'changes' => ['description' => $this->description]
+        ]);
     }
 
     #[Computed]

@@ -79,18 +79,18 @@
                         </div>
                     </div>
                 </div>
+                <div class="mt-8 border-t pt-4">
+                    <p class="text-xs font-bold text-gray-400 uppercase">履歴</p>
+                    <ul class="mt-2 space-y-2">
+                        @foreach($this->selectedEntry->logs()->latest()->take(5)->get() as $log)
+                        <li class="text-[10px] text-gray-500">
+                                <span class="font-bold">{{ $log->created_at->format('Y/m/d H:i') }}</span>
+                                : {{ $log->action === 'updated' ? '内容更新' : '新規登録' }}
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
-        </div>
-        <div class="mt-8 border-t pt-4">
-            <label class="text-xs font-bold text-gray-400 uppercase">履歴</label>
-            <ul class="mt-2 space-y-2">
-                @foreach($this->selectedEntry->logs()->latest()->take(5)->get() as $log)
-                    <li class="text-[10px] text-gray-500">
-                        <span class="font-bold">{{ $log->created_at->format('Y/m/d H:i') }}</span>
-                        : {{ $log->action === 'updated' ? '内容更新' : '新規登録' }}
-                    </li>
-                @endforeach
-            </ul>
         </div>
         <div wire:click="$set('selectedEntryId', null)" class="fixed inset-0 bg-black opacity-20 z-40"></div>
     @endif

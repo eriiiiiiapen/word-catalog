@@ -184,7 +184,7 @@ new class extends Component {
     #[Computed]
     public function selectedEntry()
     {
-        return $this->selectedEntryId ? DictionaryEntry::with('tags')->find($this->selectedEntryId) : null;
+        return $this->selectedEntryId ? DictionaryEntry::with(['tags', 'logs'])->find($this->selectedEntryId) : null;
     }
 }; 
 

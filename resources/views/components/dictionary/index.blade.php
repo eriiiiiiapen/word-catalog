@@ -223,6 +223,15 @@ new class extends Component {
             @endforeach
         </nav>
 
+        <div class="p-4 flex items-center">
+            <a 
+                href="{{ route('dictionary.import-sql-with-project') }}"
+                class="w-full text-center text-sm px-4 py-2 rounded transition cursor-pointer border border-white hover:bg-gray-400"
+            >
+                SQLインポート画面へ
+            </a>
+        </div>
+
         <div class="p-4 border-t border-slate-700 text-xs text-slate-500">
             Total: {{ \App\Models\DictionaryEntry::count() }} entries
         </div>

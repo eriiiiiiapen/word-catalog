@@ -58,7 +58,10 @@ new class extends Component {
 
 ?>
 
-<div class="mb-8 p-6 bg-slate-50 rounded-lg border">
+<div class="mb-8 p-6 bg-slate-50 border-b">
+    <div class="absolute right-4">
+        <a href="{{ route('dictionary.index') }}" class="border border-black p-2 rounded hover:bg-gray-200">一覧へ</a>
+    </div>
     <h2 class="font-bold mb-4">1. 案件を選択または新規作成</h2>
     <div class="grid grid-cols-2 gap-4 mb-4">
         <div>
@@ -79,7 +82,7 @@ new class extends Component {
     <h2 class="font-bold mb-4">2. SQLファイルを解析</h2>
     <div class="flex items-center gap-2">
         <input type="file" wire:model="sqlFile" class="border p-2 bg-white flex-1">
-        <button wire:click="process" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700">解析開始</button>
+        <button wire:click="process" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 cursor-pointer">解析開始</button>
     </div>
 
     @if(count($suggestions) > 0)

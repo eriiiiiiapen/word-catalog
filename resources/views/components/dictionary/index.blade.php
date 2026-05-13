@@ -216,7 +216,7 @@ new class extends Component {
                     class="w-full text-left px-4 py-2 rounded text-sm transition flex justify-between items-center cursor-pointer {{ $projectId === $project->id ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700' }}"
                 >
                     <span class="truncate">{{ $project->name }}</span>
-                    <span class="text-[10px] bg-slate-900 px-1.5 py-0.5 rounded text-slate-400">
+                    <span class="text-[10px] font-bold {{ $projectId === $project->id ? 'bg-white' : 'bg-slate-900' }} px-1.5 py-0.5 rounded text-slate-400">
                         {{ $project->dictionary_entries_count }}
                     </span>
                 </button>

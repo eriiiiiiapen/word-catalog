@@ -287,7 +287,7 @@ new class extends Component {
                 <div class="px-4 mb-4">
                     <button 
                         wire:click="openBulkModal"
-                        class="w-full bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center justify-center gap-2"
+                        class="cursor-pointer w-full bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center justify-center gap-2"
                     >
                         <span>Excelから一括登録</span>
                     </button>
@@ -365,8 +365,7 @@ new class extends Component {
     <div class="fixed inset-0 overflow-y-auto z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
             
-            <div class="fixed inset-0 bg-gray-600 opacity-75 transition-opacity" 
-                style="z-index: -1;" 
+            <div class="fixed inset-0 bg-gray-600 opacity-75 transition-opacity"
                 wire:click="$set('showBulkModal', false)">
             </div>
 
@@ -378,7 +377,7 @@ new class extends Component {
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-bold text-gray-900">Excelから一括インポート</h3>
-                        <button wire:click="$set('showBulkModal', false)" class="text-gray-400 hover:text-gray-600">✕</button>
+                        <button wire:click="$set('showBulkModal', false)" class="cursor-pointer text-gray-400 hover:text-gray-600">✕</button>
                     </div>
                     
                     <p class="text-sm text-gray-500 mb-4">
@@ -427,7 +426,7 @@ new class extends Component {
                     </button>
                     <button 
                         wire:click="$set('showBulkModal', false)" 
-                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+                        class="cursor-pointer mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
                     >
                         キャンセル
                     </button>

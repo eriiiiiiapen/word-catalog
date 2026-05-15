@@ -204,11 +204,8 @@ new class extends Component {
             ]);
         }
 
-        // リセット
         $this->reset(['bulkText', 'suggestions']);
-        
-        // 完了メッセージ（任意）
-        session()->flash('message', '一括登録が完了しました！');
+        session()->flash('message', '一括登録が完了しました');
     }
 
     #[Computed]
@@ -224,6 +221,11 @@ new class extends Component {
     {
         return DictionaryEntry::query()
             ->with(['project', 'tags'])
+            ->when($this->selectedTagId, function($q) {
+                $q->whereHas('tags', function($q) {
+                    $q->where('tags.id', $this->selectedTagId);
+                });
+            })
             ->when($this->projectId, fn($q) => $q->where('project_id', $this->projectId))
             ->where(function ($query) {
                 $search = $this->search;

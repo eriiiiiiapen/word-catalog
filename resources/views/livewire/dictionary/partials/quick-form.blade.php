@@ -10,20 +10,20 @@
             </select>
         </div>
         <div class="flex-1">
-            <label class="block text-xs text-blue-600 font-bold mb-1">テーブル/カテゴリ</label>
-            <input type="text" wire:model="newTableName" placeholder="users / 業務用語" class="w-full border rounded px-2 py-1 bg-white">
+            <label for="newTableName" class="block text-xs text-blue-600 font-bold mb-1">テーブル/カテゴリ</label>
+            <input id="newTableName" type="text" wire:model="newTableName" placeholder="users / 業務用語" class="w-full border rounded px-2 py-1 bg-white">
         </div>
         <div class="flex-1">
-            <label class="block text-xs text-blue-600 font-bold mb-1">物理名 (英字)</label>
-            <input type="text" wire:model="newPhysicalName" placeholder="status_id" class="w-full border rounded px-2 py-1 bg-white">
+            <label for="newPhysicalName" class="block text-xs text-blue-600 font-bold mb-1">物理名 (英字)</label>
+            <input id="newPhysicalName" type="text" wire:model="newPhysicalName" placeholder="status_id" class="w-full border rounded px-2 py-1 bg-white">
         </div>
         <div class="flex-1">
-            <label class="block text-xs text-blue-600 font-bold mb-1">論理名 (日本語)</label>
-            <input type="text" wire:model="newLogicalName" placeholder="公開ステータス" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
+            <label for="newLogicalName" class="block text-xs text-blue-600 font-bold mb-1">論理名 (日本語)</label>
+            <input id="newLogicalName" type="text" wire:model="newLogicalName" placeholder="公開ステータス" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
         </div>
         <div>
-            <label class="block text-xs text-blue-600 font-bold mb-1">タグ (カンマ区切り)</label>
-            <input type="text" wire:model="newTags" placeholder="決済, 重要, 未定" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
+            <label for="newTags" class="block text-xs text-blue-600 font-bold mb-1">タグ (カンマ区切り)</label>
+            <input id="newTags" type="text" wire:model="newTags" placeholder="決済, 重要, 未定" class="w-full border rounded px-2 py-1 bg-white" wire:keydown.enter="quickSave">
         </div>
         <button wire:click="quickSave" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 cursor-pointer font-bold shadow-sm">
             追加

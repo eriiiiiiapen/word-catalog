@@ -59,7 +59,7 @@
                         <textarea class="w-full border rounded p-2 text-sm h-32" 
                                 placeholder="この項目の背景や、開発時の注意点などをメモ..."
                                 wire:model.blur="description"></textarea>
-                        <button wire:click="changeDesctiption" class="mr-auto bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
+                        <button wire:click="changeDescription" class="mr-auto bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
                     </div>
                 </div>
                 <div class="mt-6">

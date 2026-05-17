@@ -128,7 +128,7 @@ new class extends Component {
         $this->description = $this->selectedEntry->description;
     }
 
-    public function changeDesctiption()
+    public function changeDescription()
     {
         if (!$this->selectedEntry) return;
 

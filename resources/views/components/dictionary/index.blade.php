@@ -105,7 +105,9 @@ new class extends Component {
 
         $this->selectedEntry->logs()->create([
             'action' => 'link_added',
-            'changes' => ['label' => $this->newLinkLabel]
+            'changes' => [
+                'label' => $this->newLinkLabel,
+            ]
         ]);
 
         $this->reset(['newLinkLabel', 'newLinkUrl']);
@@ -144,6 +146,7 @@ new class extends Component {
         $this->selectedEntry->logs()->create([
             'action' => 'updated',
             'changes' => [
+                'label' => 'description',
                 'before' => $oldDescription,
                 'after'  => $newDescription
             ]

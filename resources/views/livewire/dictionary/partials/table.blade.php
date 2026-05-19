@@ -84,9 +84,15 @@
                     <ul class="mt-2 space-y-2">
                         @foreach($this->selectedEntry->logs()->latest()->take(5)->get() as $log)
                         <li class="text-[10px] text-gray-500">
-                                <span class="font-bold">{{ $log->created_at->format('Y/m/d H:i') }}</span>
-                                : {{ $log->action === 'updated' ? '内容更新' : '新規登録' }}
-                            </li>
+                            <span class="font-bold">{{ $log->created_at->format('Y/m/d H:i') }}</span>
+                            : {{ $log->action === 'updated' ? '内容更新' : '新規登録' }}
+                            @if(isset($log->changes['label']) && $log->changes['label'] === 'description')
+                            <p>
+                                変更前：{{ isset($log->changes['before']) ? $log->changes['before'] : '' }}<br>
+                                変更後：{{ isset($log->changes['after']) ? $log->changes['after'] : '' }}
+                            </p>
+                            @endif
+                        </li>
                         @endforeach
                     </ul>
                 </div>

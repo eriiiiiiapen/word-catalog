@@ -132,13 +132,21 @@ new class extends Component {
     {
         if (!$this->selectedEntry) return;
 
+        $oldDescription = $this->selectedEntry->description;
+        $newDescription = $this->description;
+
+        if ($oldDescription === $newDescription) return;
+
         $this->selectedEntry->update([
-            'description' => $this->description
+            'description' => $newDescription
         ]);
 
         $this->selectedEntry->logs()->create([
             'action' => 'updated',
-            'changes' => ['description' => $this->description]
+            'changes' => [
+                'before' => $oldDescription,
+                'after'  => $newDescription
+            ]
         ]);
     }
 

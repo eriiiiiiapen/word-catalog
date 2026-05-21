@@ -79,22 +79,60 @@
                         </div>
                     </div>
                 </div>
+                <!-- 変更履歴のタイムライン表示 -->
                 <div class="mt-8 border-t pt-4">
-                    <p class="text-xs font-bold text-gray-400 uppercase">履歴</p>
-                    <ul class="mt-2 space-y-2">
-                        @foreach($this->selectedEntry->logs()->latest()->take(5)->get() as $log)
-                        <li class="text-[10px] text-gray-500">
-                            <span class="font-bold">{{ $log->created_at->format('Y/m/d H:i') }}</span>
-                            : {{ $log->action === 'updated' ? '内容更新' : '新規登録' }}
-                            @if(isset($log->changes['label']) && $log->changes['label'] === 'description')
-                            <p>
-                                変更前：{{ isset($log->changes['before']) ? $log->changes['before'] : '' }}<br>
-                                変更後：{{ isset($log->changes['after']) ? $log->changes['after'] : '' }}
-                            </p>
-                            @endif
-                        </li>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">仕様変更の歴史</p>
+                    
+                    <div class="relative border-l-2 border-slate-200 ml-2 pl-4 space-y-6">
+                        @foreach($this->selectedEntry->logs()->latest()->take(10)->get() as $log)
+                            <div class="relative">
+                                <!-- タイムラインのドット -->
+                                <span class="absolute -left-[21px] top-1 bg-white p-0.5 rounded-full">
+                                    <span class="block w-2 h-2 rounded-full {{ $log->action === 'updated' ? 'bg-amber-500' : ($log->action === 'link_added' ? 'bg-blue-500' : 'bg-emerald-500') }}"></span>
+                                </span>
+
+                                <!-- タイムスタンプ -->
+                                <time class="block text-[10px] font-mono text-slate-400">
+                                    {{ $log->created_at->format('Y/m/d H:i') }}
+                                </time>
+
+                                <!-- アクションタイトル -->
+                                <h4 class="text-xs font-bold text-slate-700 mt-0.5">
+                                    @if($log->action === 'updated')
+                                        ✏️ 補足説明の更新
+                                    @elseif($log->action === 'link_added')
+                                        🔗 関連リンクの追加
+                                    @else
+                                        📥 辞書への登録
+                                    @endif
+                                </h4>
+
+                                <!-- 変更詳細（差分表示） -->
+                                @if(isset($log->changes['label']) && $log->changes['label'] === 'description')
+                                    <div class="mt-1.5 text-[11px] bg-slate-50 p-2 rounded border border-slate-100 space-y-1">
+                                        @if(!empty($log->changes['before']))
+                                            <div class="text-red-500 line-through">
+                                                <span class="font-bold text-[9px] bg-red-50 px-1 py-0.5 rounded mr-1">前</span>{{ $log->changes['before'] }}
+                                            </div>
+                                        @else
+                                            <div class="text-slate-400 italic text-[10px]">（前回の記載なし）</div>
+                                        @endif
+                                        
+                                        <div class="text-emerald-600 font-medium">
+                                            <span class="font-bold text-[9px] bg-emerald-50 px-1 py-0.5 rounded mr-1">後</span>{{ $log->changes['after'] }}
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <!-- リンク追加時の詳細 -->
+                                @if($log->action === 'link_added' && isset($log->changes['label']))
+                                    <div class="mt-1 text-[11px] text-slate-600">
+                                        「<span class="font-semibold text-slate-800">{{ $log->changes['label'] }}</span>」のリンクを紐付けました。
+                                    </div>
+                                @endif
+                            </div>
                         @endforeach
-                    </ul>
+                    </div>
                 </div>
             </div>
         </div>

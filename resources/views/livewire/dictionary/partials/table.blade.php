@@ -81,7 +81,7 @@
                 </div>
                 <!-- 変更履歴のタイムライン表示 -->
                 <div class="mt-8 border-t pt-4">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">仕様変更の歴史</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">仕様変更の経緯</p>
                     
                     <div class="relative border-l-2 border-slate-200 ml-2 pl-4 space-y-6">
                         @foreach($this->selectedEntry->logs()->latest()->take(10)->get() as $log)

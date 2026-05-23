@@ -47,12 +47,12 @@
                 </div>
                 <div class="space-y-6">
                     <div>
-                        <label class="text-xs font-bold text-blue-600 uppercase">論理名</label>
-                        <p class="text-lg font-semibold text-gray-800">{{ $this->selectedEntry->logical_name }}</p>
+                        <label class="text-xs font-bold text-blue-600 uppercase">テーブル名</label>
+                        <p class="text-lg font-semibold text-gray-800">{{ $this->selectedEntry->table_name }}</p>
                     </div>
                     <div>
-                        <label class="text-xs font-bold text-blue-600 uppercase">物理名</label>
-                        <p class="font-mono bg-gray-100 p-2 rounded">{{ $this->selectedEntry->physical_name }}</p>
+                        <label class="text-xs font-bold text-blue-600 uppercase">論理名</label>
+                        <p class="text-lg font-semibold text-gray-800">{{ $this->selectedEntry->logical_name }}</p>
                     </div>
                     <div>
                         <label class="text-xs font-bold text-blue-600 uppercase tracking-wider">物理名</label>
@@ -65,7 +65,7 @@
                                     copied = true;
                                     setTimeout(() => copied = false, 1500);
                                 "
-                                class="text-[11px] text-slate-500 hover:text-blue-600 px-2 py-0.5 rounded border border-slate-300 bg-white shadow-sm transition-all"
+                                class="cursor-pointer text-[11px] text-slate-500 hover:text-blue-600 px-2 py-0.5 rounded border border-slate-300 bg-white shadow-sm transition-all"
                             >
                                 <span x-show="!copied">コピー</span>
                                 <span x-show="copied" class="text-emerald-600 font-bold">Copied</span>
@@ -80,7 +80,7 @@
                                         copiedMig = true;
                                         setTimeout(() => copiedMig = false, 1500);
                                     "
-                                    class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
+                                    class="cursor-pointer text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
                                 >
                                     <span x-show="!copiedMig">Migration</span>
                                     <span x-show="copiedMig" class="text-emerald-400 font-bold">Copied</span>
@@ -91,7 +91,7 @@
                                         copiedVal = true;
                                         setTimeout(() => copiedVal = false, 1500);
                                     "
-                                    class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
+                                    class="cursor-pointer text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
                                 >
                                     <span x-show="!copiedVal">Validation</span>
                                     <span x-show="copiedVal" class="text-emerald-400 font-bold">Copied</span>

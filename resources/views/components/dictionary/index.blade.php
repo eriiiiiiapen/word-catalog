@@ -272,6 +272,50 @@ new class extends Component {
     {
         return $this->selectedEntryId ? DictionaryEntry::with(['tags', 'logs'])->find($this->selectedEntryId) : null;
     }
+
+    /**
+     * 物理名からマイグレーションコードを自動生成する
+     */
+    #[Computed]
+    public function snippetMigration()
+    {
+        if (!$this->selectedEntry) return '';
+        
+        $name = $this->selectedEntry->physical_name;
+        $comment = $this->selectedEntry->logical_name;
+
+        // ID系
+        if ($name === 'id') {
+            return '$table->id();';
+        }
+        if (str_ends_with($name, '_id')) {
+            return "\$table->foreignId('{$name}')->nullable()->comment('{$comment}');";
+        }
+        
+        // 日時・日付系
+        if (str_ends_with($name, '_at')) {
+            return "\$table->dateTime('{$name}')->nullable()->comment('{$comment}');";
+        }
+        if (str_ends_with($name, '_date')) {
+            return "\$table->date('{$name}')->nullable()->comment('{$comment}');";
+        }
+
+        // フラグ・数値系
+        if (str_starts_with($name, 'has_') || str_starts_with($name, 'is_') || str_ends_with($name, '_flag') || str_ends_with($name, '_flg')) {
+            return "\$table->boolean('{$name}')->default(false)->comment('{$comment}');";
+        }
+        if (str_ends_with($name, '_count') || str_ends_with($name, '_amount') || $name === 'sort_order') {
+            return "\$table->integer('{$name}')->default(0)->comment('{$comment}');";
+        }
+
+        // テキスト系
+        if (str_ends_with($name, '_text') || $name === 'description' || $name === 'memo' || $name === 'note') {
+            return "\$table->text('{$name}')->nullable()->comment('{$comment}');";
+        }
+        
+        // デフォルト（文字列）
+        return "\$table->string('{$name}')->comment('{$comment}');";
+    }
 }; 
 
 ?>

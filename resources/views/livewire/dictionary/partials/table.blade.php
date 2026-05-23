@@ -55,6 +55,55 @@
                         <p class="font-mono bg-gray-100 p-2 rounded">{{ $this->selectedEntry->physical_name }}</p>
                     </div>
                     <div>
+                        <label class="text-xs font-bold text-blue-600 uppercase tracking-wider">物理名</label>
+                        <div class="flex items-center gap-2 bg-slate-100 p-2 rounded font-mono text-sm justify-between mt-1">
+                            <span class="text-slate-800">{{ $this->selectedEntry->physical_name }}</span>
+                            <button 
+                                x-data="{ copied: false }"
+                                @click="
+                                    navigator.clipboard.writeText('{{ $this->selectedEntry->physical_name }}');
+                                    copied = true;
+                                    setTimeout(() => copied = false, 1500);
+                                "
+                                class="text-[11px] text-slate-500 hover:text-blue-600 px-2 py-0.5 rounded border border-slate-300 bg-white shadow-sm transition-all"
+                            >
+                                <span x-show="!copied">コピー</span>
+                                <span x-show="copied" class="text-emerald-600 font-bold">Copied</span>
+                            </button>
+                        </div>
+                        <div class="mt-3" x-data="{ copiedMig: false, copiedVal: false }">
+                            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">コードスニペット</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button 
+                                    @click="
+                                        navigator.clipboard.writeText(`{{ $this->snippetMigration }}`);
+                                        copiedMig = true;
+                                        setTimeout(() => copiedMig = false, 1500);
+                                    "
+                                    class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
+                                >
+                                    <span x-show="!copiedMig">Migration</span>
+                                    <span x-show="copiedMig" class="text-emerald-400 font-bold">Copied</span>
+                                </button>
+                                <button 
+                                    @click="
+                                        navigator.clipboard.writeText(`'{{ $this->selectedEntry->physical_name }}' => ['required'],`);
+                                        copiedVal = true;
+                                        setTimeout(() => copiedVal = false, 1500);
+                                    "
+                                    class="text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded font-mono shadow-sm transition-all flex items-center gap-1"
+                                >
+                                    <span x-show="!copiedVal">Validation</span>
+                                    <span x-show="copiedVal" class="text-emerald-400 font-bold">Copied</span>
+                                </button>
+                            </div>
+                            <div class="mt-2 text-[10px] font-mono bg-slate-900 text-slate-400 p-2 rounded overflow-x-auto border border-slate-800">
+                                <span class="text-slate-600">// コピーされるコード</span><br>
+                                <span class="text-emerald-400">{{ $this->snippetMigration }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
                         <label class="text-xs font-bold text-blue-600 uppercase">補足説明</label>
                         <textarea class="w-full border rounded p-2 text-sm h-32" 
                                 placeholder="この項目の背景や、開発時の注意点などをメモ..."

@@ -103,12 +103,12 @@
                             </div>
                         </div>
                     </div>
-                    <div>
-                        <label class="text-xs font-bold text-blue-600 uppercase">補足説明</label>
+                    <div class="flex flex-col">
+                        <label class="py-1 text-xs font-bold text-blue-600 uppercase">補足説明</label>
                         <textarea class="w-full border rounded p-2 text-sm h-32" 
                                 placeholder="この項目の背景や、開発時の注意点などをメモ..."
                                 wire:model.blur="description"></textarea>
-                        <button wire:click="changeDescription" class="mr-auto bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
+                        <button wire:click="changeDescription" class="self-end mt-2 py-1 w-12 bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
                     </div>
                 </div>
                 <div class="mt-6">

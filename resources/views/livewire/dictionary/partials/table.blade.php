@@ -108,7 +108,7 @@
                         <textarea class="w-full border rounded p-2 text-sm h-32" 
                                 placeholder="この項目の背景や、開発時の注意点などをメモ..."
                                 wire:model.blur="description"></textarea>
-                        <button wire:click="changeDescription" class="self-end mt-2 py-1 w-12 bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
+                        <button wire:click="changeDescription" class="self-end mt-2 py-1 w-12 bg-blue-500 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">更新</button>
                     </div>
                 </div>
                 <div class="mt-6">
@@ -124,7 +124,7 @@
                         <div class="flex gap-1 mt-2 border border-gray-300 p-4">
                             <input type="text" wire:model="newLinkLabel" placeholder="ラベル" class="text-xs border rounded px-1 w-1/3">
                             <input type="text" wire:model="newLinkUrl" placeholder="URL" class="text-xs border rounded px-1 flex-1">
-                            <button wire:click="addLink" class="bg-blue-400 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">+</button>
+                            <button wire:click="addLink" class="bg-blue-500 hover:bg-blue-300 text-white cursor-pointer px-2 rounded text-xs">+</button>
                         </div>
                     </div>
                 </div>

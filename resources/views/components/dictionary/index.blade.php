@@ -316,6 +316,67 @@ new class extends Component {
         // デフォルト（文字列）
         return "\$table->string('{$name}')->comment('{$comment}');";
     }
+
+    /**
+     * 現在選択中のプロジェクトの辞書データをMarkdownでダウンロードする
+     */
+    public function downloadMarkdown()
+    {
+        if (!$this->projectId) {
+            return;
+        }
+
+        $project = Project::find($this->projectId);
+
+        $entries = DictionaryEntry::where('project_id', $this->projectId)
+            ->orderBy('table_name')
+            ->orderBy('physical_name')
+            ->get();
+
+        // Markdownの生成開始
+        $md = "# 【データ辞書】{$project->name}\n\n";
+        $md .= "出力日時: " . now()->format('Y-m-d H:i') . "\n\n";
+        $md .= "---\n\n";
+
+        $grouped = $entries->groupBy('table_name');
+
+        foreach ($grouped as $tableName => $tableEntries) {
+            $md .= "## 📋 テーブル: {$tableName}\n\n";
+
+            $md .= "| 物理名 (Column) | 論理名 (Name) | 補足説明 (Description) | 関連リンク (Links) |\n";
+            $md .= "| :--- | :--- | :--- | :--- |\n";
+
+            foreach ($tableEntries as $entry) {
+                // リンクの成形
+                $linksStr = '';
+                if (!empty($entry->links)) {
+                    $linkItems = [];
+                    foreach ($entry->links as $link) {
+                        $label = $link['label'] ?? 'リンク';
+                        $url = $link['url'] ?? '#';
+                        $linkItems[] = "[{$label}]({$url})";
+                    }
+                    $linksStr = implode(', ', $linkItems);
+                } else {
+                    $linksStr = '-';
+                }
+
+                $description = str_replace(["\r\n", "\r", "\n"], " ", $entry->description ?? '-');
+
+                $md .= "| `{$entry->physical_name}` | **{$entry->logical_name}** | {$description} | {$linksStr} |\n";
+            }
+            
+            $md .= "\n";
+        }
+
+        $filename = "data_dictionary_" . Str::snake($project->name) . "_" . now()->format('YmdHis') . ".md";
+
+        return response()->streamDownload(function () use ($md) {
+            echo $md;
+        }, $filename, [
+            'Content-Type' => 'text/markdown',
+        ]);
+    }
 }; 
 
 ?>
@@ -388,14 +449,23 @@ new class extends Component {
                 </h1>
                 
                 <div class="flex items-center gap-4">
+                    @if($projectId)
+                        <button 
+                            wire:click="downloadMarkdown"
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+                        >
+                            Markdown形式で出力
+                        </button>
+                    @endif
+
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                             🔍
                         </span>
                         <input type="text" 
-                               wire:model.live="search" 
-                               placeholder="物理名・論理名で検索..."
-                               class="pl-10 pr-4 py-2 border rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none">
+                            wire:model.live="search" 
+                            placeholder="物理名・論理名で検索..."
+                            class="pl-10 pr-4 py-2 border rounded-full text-sm w-64 focus:ring-2 focus:ring-blue-500 outline-none">
                     </div>
                 </div>
             </div>

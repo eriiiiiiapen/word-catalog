@@ -401,17 +401,6 @@ new class extends Component {
                 プロジェクト一覧
             </div>
 
-            @if($projectId)
-                <div class="px-4 mb-4">
-                    <button 
-                        wire:click="openBulkModal"
-                        class="cursor-pointer w-full bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center justify-center gap-2"
-                    >
-                        <span>Excelから一括登録</span>
-                    </button>
-                </div>
-            @endif
-
             @foreach($this->projects as $project)
                 <button 
                     wire:click="$set('projectId', {{ $project->id }})"
@@ -449,7 +438,17 @@ new class extends Component {
                 </h1>
                 
                 <div class="flex items-center gap-4">
+
                     @if($projectId)
+                        <div>
+                            <button 
+                                wire:click="openBulkModal"
+                                class="cursor-pointer w-full bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center justify-center gap-2"
+                            >
+                                <span>Excelから一括登録</span>
+                            </button>
+                        </div>
+
                         <button 
                             wire:click="downloadMarkdown"
                             class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2 px-4 rounded shadow-sm transition flex items-center gap-1.5 cursor-pointer"
